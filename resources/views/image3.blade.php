@@ -63,6 +63,20 @@
             align-items: center;
             text-align: center;
         }
+
+        .vr-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -71,20 +85,22 @@
     <p>Пожалуйста, поверните устройство в альбомный режим</p>
 </div>
 
-<a-scene vr-mode-ui="enabled: true">
+<a-scene vr-mode-ui="enabled: false" embedded>
+    <!-- Панорама 360 -->
     <a-sky src="{{ asset('360/img-3.jpg') }}" rotation="0 -90 0"></a-sky>
-    <!-- Камеры для стерео-эффекта -->
-    <a-entity camera="active: true" position="0 1.6 0" wasd-controls-enabled="false">
-        <!-- Левая камера -->
-        <a-entity camera="active: false" stereo="eye: left" rotation="0 0 0"></a-entity>
-        <!-- Правая камера -->
-        <a-entity camera="active: false" stereo="eye: right" rotation="0 0 0"></a-entity>
-    </a-entity>
 
-    <!-- Контроллеры для VR -->
-    <a-entity laser-controls="hand: right"></a-entity>
-    <a-entity laser-controls="hand: left"></a-entity>
+    <!-- Камера с VR-режимом -->
+    <a-entity position="0 1.6 0">
+        <a-camera
+            wasd-controls-enabled="false"
+            look-controls="pointerLockEnabled: true"
+            stereo="eye: left; ipd: 0.065"
+            vr-mode-ui="enabled: false">
+        </a-camera>
+    </a-entity>
 </a-scene>
+
+<button class="vr-button" id="vrButton">VR MODE</button>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -110,17 +126,25 @@
         checkOrientation();
 
     });
-    // Автоматический вход в VR-режим при наличии гарнитуры
-    document.querySelector('a-scene').addEventListener('loaded', function() {
-        if (navigator.getVRDisplays) {
-            navigator.getVRDisplays().then(function(displays) {
-                if (displays.length > 0) {
-                    const scene = document.querySelector('a-scene');
-                    scene.enterVR();
-                }
-            });
+
+    // Переключение VR-режима
+    const vrButton = document.getElementById('vrButton');
+    const scene = document.querySelector('a-scene');
+
+    vrButton.addEventListener('click', function() {
+        if (scene.is('vr-mode')) {
+            scene.exitVR();
+            vrButton.textContent = 'VR MODE';
+        } else {
+            scene.enterVR();
+            vrButton.textContent = 'EXIT VR';
         }
     });
+
+    // Автоматическая подстройка под мобильные устройства
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+        document.querySelector('a-camera').setAttribute('stereo', 'ipd', '0.065');
+    }
 </script>
 </body>
 </html>

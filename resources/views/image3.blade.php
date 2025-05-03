@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+    <meta name="mobile-web-app-capable" content="yes">
     <!-- Мета-теги для iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -70,9 +71,19 @@
     <p>Пожалуйста, поверните устройство в альбомный режим</p>
 </div>
 
-<a-scene>
+<a-scene vr-mode-ui="enabled: true">
     <a-sky src="{{ asset('360/img-3.jpg') }}" rotation="0 -90 0"></a-sky>
-    <a-camera fov="80" look-controls="pointerLockEnabled: true"></a-camera>
+    <!-- Камеры для стерео-эффекта -->
+    <a-entity camera="active: true" position="0 1.6 0" wasd-controls-enabled="false">
+        <!-- Левая камера -->
+        <a-entity camera="active: false" stereo="eye: left" rotation="0 0 0"></a-entity>
+        <!-- Правая камера -->
+        <a-entity camera="active: false" stereo="eye: right" rotation="0 0 0"></a-entity>
+    </a-entity>
+
+    <!-- Контроллеры для VR -->
+    <a-entity laser-controls="hand: right"></a-entity>
+    <a-entity laser-controls="hand: left"></a-entity>
 </a-scene>
 
 <script>
@@ -98,6 +109,17 @@
         window.addEventListener('resize', checkOrientation);
         checkOrientation();
 
+    });
+    // Автоматический вход в VR-режим при наличии гарнитуры
+    document.querySelector('a-scene').addEventListener('loaded', function() {
+        if (navigator.getVRDisplays) {
+            navigator.getVRDisplays().then(function(displays) {
+                if (displays.length > 0) {
+                    const scene = document.querySelector('a-scene');
+                    scene.enterVR();
+                }
+            });
+        }
     });
 </script>
 </body>

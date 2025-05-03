@@ -61,6 +61,18 @@
             right: 20px;
             bottom: 20px;
         }
+
+        a-scene {
+            overflow: hidden;
+        }
+
+        .a-sky {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            left: -25%;
+            top: -25%;
+        }
     </style>
 </head>
 <body class="bg-red-300">
@@ -71,7 +83,11 @@
 
 <a-scene>
     <a-sky src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0" radius="10000"></a-sky>
-    <a-camera look-controls="pointerLockEnabled: true"></a-camera>
+    <a-camera
+        fov="80"
+        wasd-controls-enabled="false"
+        look-controls="pointerLockEnabled: true"
+    ></a-camera>
 </a-scene>
 
 <script>
@@ -129,6 +145,23 @@
         // Автозапуск полноэкранного режима (по желанию)
         // setTimeout(() => fullscreenButton.click(), 1000);
     });
+
+    function resizePano() {
+        const pano = document.getElementById('pano');
+        const aspect = window.innerWidth / window.innerHeight;
+
+        // Вертикальные экраны (9:16)
+        if (aspect < 1) {
+            pano.setAttribute('scale', '1.5 1.5 1.5');
+        }
+        // Горизонтальные экраны (16:9)
+        else {
+            pano.setAttribute('scale', '1 1 1');
+        }
+    }
+
+    window.addEventListener('resize', resizePano);
+    document.querySelector('a-scene').addEventListener('loaded', resizePano);
 </script>
 </body>
 </html>

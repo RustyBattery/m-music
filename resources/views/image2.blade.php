@@ -70,10 +70,9 @@
 <a-scene>
     <!-- Минимальная рабочая конфигурация -->
     <a-sky id="pano" src="{{ asset('360/img-2.jpg') }}"
-           rotation="0 -90 0"
-           material="shader: flat; side: back"></a-sky>
+           rotation="0 -90 0"></a-sky>
 
-    <a-camera fov="110" look-controls="pointerLockEnabled: true"></a-camera>
+    <a-camera fov="80" look-controls="pointerLockEnabled: true"></a-camera>
 </a-scene>
 
 <script>
@@ -100,10 +99,10 @@
         checkOrientation();
 
         // Гарантированная инициализация
-        scene.addEventListener('loaded', () => {
-            const sky = document.querySelector('a-sky');
-            sky.setAttribute('radius', '10000');
-        });
+        // scene.addEventListener('loaded', () => {
+        //     const sky = document.querySelector('a-sky');
+        //     sky.setAttribute('radius', '10000');
+        // });
     });
 </script>
 </body>

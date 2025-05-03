@@ -26,21 +26,24 @@
             right: 20px;
             z-index: 9999;
             padding: 10px 15px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
+
         #fullscreen-button:hover {
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.8);
         }
+
         /* Скрываем кнопку в полноэкранном режиме */
         :fullscreen #fullscreen-button,
         :-webkit-full-screen #fullscreen-button,
         :-moz-full-screen #fullscreen-button {
             display: none;
         }
+
         /* Принудительный поворот для мобильных в портрете */
         @media screen and (max-width: 768px) and (orientation: portrait) {
             a-scene {
@@ -60,11 +63,10 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-red-300">
 <button id="fullscreen-button">Полный экран</button>
 <div id="rotate-message">
     <p>Пожалуйста, поверните устройство в альбомный режим</p>
-    <p>↻</p>
 </div>
 
 <a-scene>
@@ -116,7 +118,7 @@
         window.addEventListener('resize', checkOrientation);
         checkOrientation();
 
-        document.querySelector('a-scene').addEventListener('loaded', function() {
+        document.querySelector('a-scene').addEventListener('loaded', function () {
             const sky = document.querySelector('a-sky');
             // Увеличиваем масштаб текстуры
             sky.setAttribute('material', 'repeat', '1 1');

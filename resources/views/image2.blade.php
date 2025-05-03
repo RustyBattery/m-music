@@ -44,18 +44,18 @@
             display: none;
         }
 
-        /* Принудительный поворот для мобильных в портрете */
-        @media screen and (max-width: 768px) and (orientation: portrait) {
-            a-scene {
-                transform: rotate(90deg);
-                transform-origin: left top;
-                width: 100vh;
-                height: 100vw;
-                position: absolute;
-                top: 100%;
-                left: 0;
-            }
-        }
+        /*!* Принудительный поворот для мобильных в портрете *!*/
+        /*@media screen and (max-width: 768px) and (orientation: portrait) {*/
+        /*    a-scene {*/
+        /*        transform: rotate(90deg);*/
+        /*        transform-origin: left top;*/
+        /*        width: 100vh;*/
+        /*        height: 100vw;*/
+        /*        position: absolute;*/
+        /*        top: 100%;*/
+        /*        left: 0;*/
+        /*    }*/
+        /*}*/
 
         .a-enter-vr {
             right: 20px;

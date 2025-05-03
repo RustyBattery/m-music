@@ -23,7 +23,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #000;
+            /*background: #000;*/
         }
 
         a-scene {
@@ -71,7 +71,7 @@
     <!-- Минимальная рабочая конфигурация -->
     <a-sky id="pano" src="{{ asset('360/img-2.jpg') }}"
            rotation="0 -90 0"
-           material="color: #000; shader: flat; side: back"></a-sky>
+           material="shader: flat; side: back"></a-sky>
 
     <a-camera fov="110" look-controls="pointerLockEnabled: true"></a-camera>
 </a-scene>

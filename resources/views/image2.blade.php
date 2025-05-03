@@ -57,13 +57,27 @@
             }
         }
 
+
+        /* Жесткий сброс всех отступов */
+        html, body, a-scene {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000 !important;
+        }
+
+        /* Принудительное заполнение */
+        .a-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+
         .a-enter-vr {
             right: 20px;
             bottom: 20px;
-        }
-
-        a-scene {
-            overflow: hidden;
         }
 
         .a-sky {
@@ -82,9 +96,9 @@
 </div>
 
 <a-scene>
-    <a-sky src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0" radius="10000"></a-sky>
+    <a-sky id="pano" src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0" radius="50000"></a-sky>
     <a-camera
-        fov="80"
+        fov="110"
         wasd-controls-enabled="false"
         look-controls="pointerLockEnabled: true"
     ></a-camera>
@@ -134,34 +148,58 @@
         window.addEventListener('resize', checkOrientation);
         checkOrientation();
 
-        document.querySelector('a-scene').addEventListener('loaded', function () {
-            const sky = document.querySelector('a-sky');
-            // Увеличиваем масштаб текстуры
-            sky.setAttribute('material', 'repeat', '1 1');
-            // // Убедимся, что нет белых границ
-            // sky.setAttribute('material', 'color', '#000');
-        });
+        // document.querySelector('a-scene').addEventListener('loaded', function () {
+        //     const sky = document.querySelector('a-sky');
+        //     // Увеличиваем масштаб текстуры
+        //     sky.setAttribute('material', 'repeat', '1 1');
+        //     // // Убедимся, что нет белых границ
+        //     // sky.setAttribute('material', 'color', '#000');
+        // });
 
         // Автозапуск полноэкранного режима (по желанию)
         // setTimeout(() => fullscreenButton.click(), 1000);
     });
 
-    function resizePano() {
+    // function resizePano() {
+    //     const pano = document.getElementById('pano');
+    //     const aspect = window.innerWidth / window.innerHeight;
+    //
+    //     // Вертикальные экраны (9:16)
+    //     if (aspect < 1) {
+    //         pano.setAttribute('scale', '1.5 1.5 1.5');
+    //     }
+    //     // Горизонтальные экраны (16:9)
+    //     else {
+    //         pano.setAttribute('scale', '1 1 1');
+    //     }
+    // }
+    //
+    // window.addEventListener('resize', resizePano);
+    // document.querySelector('a-scene').addEventListener('loaded', resizePano);
+
+
+    function fixPano() {
         const pano = document.getElementById('pano');
         const aspect = window.innerWidth / window.innerHeight;
 
-        // Вертикальные экраны (9:16)
-        if (aspect < 1) {
-            pano.setAttribute('scale', '1.5 1.5 1.5');
+        // Вертикальные экраны (9:16 и подобные)
+        if (aspect < 0.7) {
+            pano.setAttribute('scale', '2.2 2.2 2.2');
+        }
+        // Квадратные экраны
+        else if (aspect < 1.2) {
+            pano.setAttribute('scale', '1.8 1.8 1.8');
         }
         // Горизонтальные экраны (16:9)
         else {
-            pano.setAttribute('scale', '1 1 1');
+            pano.setAttribute('scale', '1.5 1.5 1.5');
         }
     }
 
-    window.addEventListener('resize', resizePano);
-    document.querySelector('a-scene').addEventListener('loaded', resizePano);
+    // Запускаем при загрузке и изменении ориентации
+    window.addEventListener('load', fixPano);
+    window.addEventListener('resize', fixPano);
+    document.querySelector('a-scene').addEventListener('loaded', fixPano);
 </script>
 </body>
 </html>

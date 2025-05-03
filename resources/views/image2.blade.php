@@ -5,18 +5,115 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Мета-теги для iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="360 Панорама">
+    <link rel="apple-touch-icon" href="{{ asset('icon.png') }}">
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+
     <title>image 360</title>
+
     @vite(['resources/js/app.js'])
+
+    <style>
+        #fullscreen-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            padding: 10px 15px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #fullscreen-button:hover {
+            background: rgba(0,0,0,0.8);
+        }
+        /* Скрываем кнопку в полноэкранном режиме */
+        :fullscreen #fullscreen-button,
+        :-webkit-full-screen #fullscreen-button,
+        :-moz-full-screen #fullscreen-button {
+            display: none;
+        }
+        /* Принудительный поворот для мобильных в портрете */
+        @media screen and (max-width: 768px) and (orientation: portrait) {
+            a-scene {
+                transform: rotate(90deg);
+                transform-origin: left top;
+                width: 100vh;
+                height: 100vw;
+                position: absolute;
+                top: 100%;
+                left: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-<a-scene stereo="active: true" vr-mode-ui>
-    <!-- Используем <a-sky> с атрибутом src -->
-    <a-sky src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0"></a-sky>
+<button id="fullscreen-button">Полный экран</button>
+<div id="rotate-message">
+    <p>Пожалуйста, поверните устройство в альбомный режим</p>
+    <p>↻</p>
+</div>
 
-    <!-- Добавляем курсор для взаимодействия -->
-    <a-camera>
-{{--        <a-cursor></a-cursor>--}}
-    </a-camera>
+<a-scene>
+    <a-sky src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0"></a-sky>
+    <a-camera look-controls="pointerLockEnabled: true"></a-camera>
 </a-scene>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fullscreenButton = document.getElementById('fullscreen-button');
+        const rotateMessage = document.getElementById('rotate-message');
+        const scene = document.querySelector('a-scene');
+
+        // Проверка поддержки Fullscreen API
+        if (!document.fullscreenEnabled) {
+            fullscreenButton.style.display = 'none';
+        }
+
+        // Обработчик кнопки полноэкранного режима
+        fullscreenButton.addEventListener('click', async () => {
+            try {
+                // 1. Вход в полноэкранный режим
+                if (scene.requestFullscreen) await scene.requestFullscreen();
+                else if (scene.webkitRequestFullscreen) await scene.webkitRequestFullscreen();
+
+                // 2. Попытка блокировки ориентации
+                if (screen.orientation?.lock) {
+                    await screen.orientation.lock('landscape').catch(e => {
+                        console.warn("Ориентация не заблокирована:", e);
+                        showRotateMessage();
+                    });
+                } else {
+                    showRotateMessage();
+                }
+            } catch (e) {
+                console.error("Ошибка полноэкранного режима:", e);
+            }
+        });
+
+        // Проверка ориентации при загрузке и изменении размера
+        function checkOrientation() {
+            if (window.innerHeight > window.innerWidth) {
+                rotateMessage.style.display = 'flex';
+            } else {
+                rotateMessage.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('resize', checkOrientation);
+        checkOrientation();
+
+        // Автозапуск полноэкранного режима (по желанию)
+        // setTimeout(() => fullscreenButton.click(), 1000);
+    });
+</script>
 </body>
 </html>

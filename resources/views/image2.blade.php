@@ -120,8 +120,8 @@
             const sky = document.querySelector('a-sky');
             // Увеличиваем масштаб текстуры
             sky.setAttribute('material', 'repeat', '1 1');
-            // Убедимся, что нет белых границ
-            sky.setAttribute('material', 'color', '#000');
+            // // Убедимся, что нет белых границ
+            // sky.setAttribute('material', 'color', '#000');
         });
 
         // Автозапуск полноэкранного режима (по желанию)

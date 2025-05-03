@@ -56,7 +56,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,1);
             color: white;
             z-index: 10000;
             justify-content: center;
@@ -111,10 +111,10 @@
     </style>
 </head>
 <body>
-{{--<button id="fullscreen-button">Полный экран</button>--}}
-{{--<div id="rotate-message">--}}
-{{--    <p>Пожалуйста, поверните устройство в альбомный режим</p>--}}
-{{--</div>--}}
+<button id="fullscreen-button">Полный экран</button>
+<div id="rotate-message">
+    <p>Пожалуйста, поверните устройство в альбомный режим</p>
+</div>
 
 {{--<a-scene vr-mode-ui="enabled: false" embedded>--}}
 {{--    <!-- Панорама 360 -->--}}
@@ -146,10 +146,7 @@
     </div>
 </div>
 
-<button class="vr-button" id="vrButton">VR РЕЖИМ</button>
-
-
-<button class="vr-button" id="vrButton">VR MODE</button>
+{{--<button class="vr-button" id="vrButton">VR MODE</button>--}}
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

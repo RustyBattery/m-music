@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <!-- Мета-теги для iOS -->
@@ -12,98 +11,70 @@
     <meta name="apple-mobile-web-app-title" content="360 Панорама">
     <link rel="apple-touch-icon" href="{{ asset('icon.png') }}">
 
-    <!-- Web App Manifest -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-
-    <title>image 360</title>
-
-    @vite(['resources/js/app.js'])
+    <title>360 Панорама</title>
 
     <style>
+        /* Жесткий сброс стилей */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        a-scene {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
         #fullscreen-button {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 9999;
             padding: 10px 15px;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.7);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        #fullscreen-button:hover {
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        /* Скрываем кнопку в полноэкранном режиме */
-        :fullscreen #fullscreen-button,
-        :-webkit-full-screen #fullscreen-button,
-        :-moz-full-screen #fullscreen-button {
+        #rotate-message {
             display: none;
-        }
-
-        /* Принудительный поворот для мобильных в портрете */
-        @media screen and (max-width: 768px) and (orientation: portrait) {
-            a-scene {
-                transform: rotate(90deg);
-                transform-origin: left top;
-                width: 100vh;
-                height: 100vw;
-                position: absolute;
-                top: 100%;
-                left: 0;
-            }
-        }
-
-
-        /* Жесткий сброс всех отступов */
-        html, body, a-scene {
-            margin: 0;
-            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            /*background: #000 !important;*/
-        }
-
-        /* Принудительное заполнение */
-        .a-canvas {
-            width: 100% !important;
-            height: 100% !important;
-            display: block;
-        }
-
-        .a-enter-vr {
-            right: 20px;
-            bottom: 20px;
-        }
-
-        .a-sky {
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            left: -25%;
-            top: -25%;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
     </style>
 </head>
-<body class="bg-red-300">
+<body>
 <button id="fullscreen-button">Полный экран</button>
 <div id="rotate-message">
     <p>Пожалуйста, поверните устройство в альбомный режим</p>
 </div>
 
 <a-scene>
-    <a-sky id="pano" src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0" radius="50000"></a-sky>
-    <a-camera
-        fov="110"
-        wasd-controls-enabled="false"
-        look-controls="pointerLockEnabled: true"
-    ></a-camera>
+    <!-- Минимальная рабочая конфигурация -->
+    <a-sky id="pano" src="{{ asset('360/img-2.jpg') }}"
+           rotation="0 -90 0"
+           material="color: #000; shader: flat; side: back"></a-sky>
+
+    <a-camera fov="110" look-controls="pointerLockEnabled: true"></a-camera>
 </a-scene>
 
+<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const fullscreenButton = document.getElementById('fullscreen-button');
@@ -111,95 +82,28 @@
         const scene = document.querySelector('a-scene');
 
         // Проверка поддержки Fullscreen API
-        if (!document.fullscreenEnabled) {
-            fullscreenButton.style.display = 'none';
-        }
+        fullscreenButton.style.display = document.fullscreenEnabled ? 'block' : 'none';
 
-        // Обработчик кнопки полноэкранного режима
-        fullscreenButton.addEventListener('click', async () => {
-            try {
-                // 1. Вход в полноэкранный режим
-                if (scene.requestFullscreen) await scene.requestFullscreen();
-                else if (scene.webkitRequestFullscreen) await scene.webkitRequestFullscreen();
-
-                // 2. Попытка блокировки ориентации
-                if (screen.orientation?.lock) {
-                    await screen.orientation.lock('landscape').catch(e => {
-                        console.warn("Ориентация не заблокирована:", e);
-                        showRotateMessage();
-                    });
-                } else {
-                    showRotateMessage();
-                }
-            } catch (e) {
-                console.error("Ошибка полноэкранного режима:", e);
-            }
+        // Обработчик кнопки
+        fullscreenButton.addEventListener('click', () => {
+            if (scene.requestFullscreen) scene.requestFullscreen();
+            else if (scene.webkitRequestFullscreen) scene.webkitRequestFullscreen();
         });
 
-        // Проверка ориентации при загрузке и изменении размера
+        // Проверка ориентации
         function checkOrientation() {
-            if (window.innerHeight > window.innerWidth) {
-                rotateMessage.style.display = 'flex';
-            } else {
-                rotateMessage.style.display = 'none';
-            }
+            rotateMessage.style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
         }
 
         window.addEventListener('resize', checkOrientation);
         checkOrientation();
 
-        // document.querySelector('a-scene').addEventListener('loaded', function () {
-        //     const sky = document.querySelector('a-sky');
-        //     // Увеличиваем масштаб текстуры
-        //     sky.setAttribute('material', 'repeat', '1 1');
-        //     // // Убедимся, что нет белых границ
-        //     // sky.setAttribute('material', 'color', '#000');
-        // });
-
-        // Автозапуск полноэкранного режима (по желанию)
-        // setTimeout(() => fullscreenButton.click(), 1000);
+        // Гарантированная инициализация
+        scene.addEventListener('loaded', () => {
+            const sky = document.querySelector('a-sky');
+            sky.setAttribute('radius', '10000');
+        });
     });
-
-    // function resizePano() {
-    //     const pano = document.getElementById('pano');
-    //     const aspect = window.innerWidth / window.innerHeight;
-    //
-    //     // Вертикальные экраны (9:16)
-    //     if (aspect < 1) {
-    //         pano.setAttribute('scale', '1.5 1.5 1.5');
-    //     }
-    //     // Горизонтальные экраны (16:9)
-    //     else {
-    //         pano.setAttribute('scale', '1 1 1');
-    //     }
-    // }
-    //
-    // window.addEventListener('resize', resizePano);
-    // document.querySelector('a-scene').addEventListener('loaded', resizePano);
-
-
-    function fixPano() {
-        const pano = document.getElementById('pano');
-        const aspect = window.innerWidth / window.innerHeight;
-
-        // Вертикальные экраны (9:16 и подобные)
-        if (aspect < 0.7) {
-            pano.setAttribute('scale', '2.2 2.2 2.2');
-        }
-        // Квадратные экраны
-        else if (aspect < 1.2) {
-            pano.setAttribute('scale', '1.8 1.8 1.8');
-        }
-        // Горизонтальные экраны (16:9)
-        else {
-            pano.setAttribute('scale', '1.5 1.5 1.5');
-        }
-    }
-
-    // Запускаем при загрузке и изменении ориентации
-    window.addEventListener('load', fixPano);
-    window.addEventListener('resize', fixPano);
-    document.querySelector('a-scene').addEventListener('loaded', fixPano);
 </script>
 </body>
 </html>

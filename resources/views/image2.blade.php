@@ -53,6 +53,11 @@
                 left: 0;
             }
         }
+
+        .a-enter-vr {
+            right: 20px;
+            bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -63,7 +68,7 @@
 </div>
 
 <a-scene>
-    <a-sky src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0"></a-sky>
+    <a-sky src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0" radius="10000"></a-sky>
     <a-camera look-controls="pointerLockEnabled: true"></a-camera>
 </a-scene>
 
@@ -110,6 +115,14 @@
 
         window.addEventListener('resize', checkOrientation);
         checkOrientation();
+
+        document.querySelector('a-scene').addEventListener('loaded', function() {
+            const sky = document.querySelector('a-sky');
+            // Увеличиваем масштаб текстуры
+            sky.setAttribute('material', 'repeat', '1 1');
+            // Убедимся, что нет белых границ
+            sky.setAttribute('material', 'color', '#000');
+        });
 
         // Автозапуск полноэкранного режима (по желанию)
         // setTimeout(() => fullscreenButton.click(), 1000);

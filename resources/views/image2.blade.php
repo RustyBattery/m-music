@@ -11,6 +11,9 @@
     <meta name="apple-mobile-web-app-title" content="360 Панорама">
     <link rel="apple-touch-icon" href="{{ asset('icon.png') }}">
 
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+
     <title>360 Панорама</title>
 
     @vite(['resources/js/app.js'])
@@ -68,10 +71,7 @@
 </div>
 
 <a-scene>
-    <!-- Минимальная рабочая конфигурация -->
-    <a-sky id="pano" src="{{ asset('360/img-2.jpg') }}"
-           rotation="0 -90 0"></a-sky>
-
+    <a-sky src="{{ asset('360/img-2.jpg') }}" rotation="0 -90 0"></a-sky>
     <a-camera fov="80" look-controls="pointerLockEnabled: true"></a-camera>
 </a-scene>
 
@@ -98,11 +98,6 @@
         window.addEventListener('resize', checkOrientation);
         checkOrientation();
 
-        // Гарантированная инициализация
-        // scene.addEventListener('loaded', () => {
-        //     const sky = document.querySelector('a-sky');
-        //     sky.setAttribute('radius', '10000');
-        // });
     });
 </script>
 </body>

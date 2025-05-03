@@ -13,6 +13,8 @@
 
     <title>360 Панорама</title>
 
+    @vite(['resources/js/app.js'])
+
     <style>
         /* Жесткий сброс стилей */
         html, body {
@@ -74,7 +76,6 @@
     <a-camera fov="110" look-controls="pointerLockEnabled: true"></a-camera>
 </a-scene>
 
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const fullscreenButton = document.getElementById('fullscreen-button');

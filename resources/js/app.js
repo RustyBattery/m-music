@@ -1,5 +1,6 @@
 import './bootstrap';
 import 'aframe';
+import 'aframe-stereo-component';
 
 document.addEventListener('DOMContentLoaded', () => {
     if (window.AFRAME) {

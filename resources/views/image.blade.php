@@ -9,14 +9,6 @@
     @vite(['resources/js/app.js'])
 </head>
 <body>
-<a-scene>
-    <!-- Используем <a-sky> с атрибутом src -->
-    <a-sky src="{{ asset('360/img.jpg') }}" rotation="0 -90 0"></a-sky>
-
-    <!-- Добавляем курсор для взаимодействия -->
-    <a-camera>
-        <a-cursor></a-cursor>
-    </a-camera>
-</a-scene>
+<iframe title="vimeo-player" src="https://player.vimeo.com/video/207528129?h=445cf9d37c" width="640" height="274" frameborder="0" allow="gyroscope; accelerometer"    allowfullscreen></iframe>
 </body>
 </html>
